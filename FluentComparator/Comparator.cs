@@ -102,44 +102,28 @@ namespace FluentComparator
             return Newtonsoft.Json.JsonConvert.SerializeObject(AValue) == Newtonsoft.Json.JsonConvert.SerializeObject(BValue);
         }
 
-        private static string GetCorrectPropertyName(Expression<Func<T, object>> expression) => GetPropertyPath(expression);
+        private string GetCorrectPropertyName(Expression<Func<T, object>> expression) => GetPropertyPath(expression);
 
-        private static MemberExpression GetMemberExpression(Expression expression)
+        private string GetPropertyPath(Expression expression)
         {
-            if (expression is MemberExpression)
+            switch (expression)
             {
-                return (MemberExpression)expression;
+                case MemberExpression memExpression:
+                    var pre = GetPropertyPath(memExpression.Expression);
+                    return (String.IsNullOrWhiteSpace(pre) ? "" : pre + ".") + memExpression.Member.Name;
+                case LambdaExpression lambaExpression:
+                    return GetPropertyPath(lambaExpression.Body);
+                case MethodCallExpression callExpression:
+                    if (callExpression.Method.Name != "Select" || callExpression.Method.Module.Name != "System.Linq.dll")
+                    {
+                        throw new ArgumentException("Method not supported for property path evaluation");
+                    }
+                    return string.Join(".", callExpression.Arguments.Select(a => GetPropertyPath(a)));
+                case UnaryExpression unaryExpression:
+                    return GetPropertyPath(unaryExpression.Operand);
+                default:
+                    return string.Empty;
             }
-            else if (expression is LambdaExpression)
-            {
-                var lambdaExpression = expression as LambdaExpression;
-                if (lambdaExpression.Body is MemberExpression)
-                {
-                    return (MemberExpression)lambdaExpression.Body;
-                }
-                else if (lambdaExpression.Body is UnaryExpression)
-                {
-                    return ((MemberExpression)((UnaryExpression)lambdaExpression.Body).Operand);
-                }
-            }
-            return null;
-        }
-
-        private static string GetPropertyPath(Expression expr)
-        {
-            var path = new System.Text.StringBuilder();
-            MemberExpression memberExpression = GetMemberExpression(expr);
-            do
-            {
-                if (path.Length > 0)
-                {
-                    path.Insert(0, ".");
-                }
-                path.Insert(0, memberExpression.Member.Name);
-                memberExpression = GetMemberExpression(memberExpression.Expression);
-            }
-            while (memberExpression != null);
-            return path.ToString();
         }
     }
 }
