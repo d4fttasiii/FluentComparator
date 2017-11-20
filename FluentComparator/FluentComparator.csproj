@@ -1,15 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.1;net461;net462</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0;netstandard2.0;net461;net462;net47</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Description>FluendComparator is a .NET library which allows you compare generic objects effectively. 
+    <Description>FluendComparator is a .NET library which allows you compare generic objects effectively.
 It makes it easy to exclude certain properties from the comparison process and it can return the list of differences.</Description>
     <RepositoryUrl>https://github.com/petertasner/FluentComparator</RepositoryUrl>
     <PackageProjectUrl>https://github.com/petertasner/FluentComparator</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/petertasner/FluentComparator/blob/master/LICENSE.md</PackageLicenseUrl>
     <RepositoryType>Github</RepositoryType>
     <PackageTags>fluent netcore compare comparison</PackageTags>
+    <PackageReleaseNotes>NetStandard 2.0 support added.</PackageReleaseNotes>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
